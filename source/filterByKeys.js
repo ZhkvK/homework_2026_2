@@ -27,12 +27,14 @@
  * filterByKeys({ a: 1, b: 2 }, ['a', 'c']);
  * // => { a: 1 }
  */
-function filterByKeys(obj, keys) {
-    const newObject = {};
-    for (const key of keys) {
-        if (key in obj) {
-            newObject[key] = structuredClone(obj[key]);
-        }
-    }
-    return newObject;
-}
+
+const filterByKeys = (obj, keys) => {
+    if (typeof obj !== 'object' || obj === null || obj === undefined) throw new TypeError('obj must be an object');
+    if (!Array.isArray(keys)) throw new TypeError('keys must be an array');
+
+    return Object.fromEntries(
+        keys
+            .filter(key => key in obj)
+            .map(key => [key, structuredClone(obj[key])])
+    );
+};
