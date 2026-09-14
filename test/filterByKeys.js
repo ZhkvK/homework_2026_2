@@ -1,6 +1,6 @@
 'use strict';
 
-const blunkTestObject = {};
+const emptyTestObject = {};
 const simpleTestObject = {
     name: "John",
     age: 18,
@@ -34,9 +34,9 @@ const testSpecialValues = {
 QUnit.module('Тестируем функцию filterByKeys', function () {
 
     QUnit.test('Клонирует пустой объект', function (assert) {
-        assert.deepEqual(filterByKeys(blunkTestObject, ["name"]), {}, 'filterByKeys({}, ["name"]) === {}');
-        assert.deepEqual(filterByKeys(blunkTestObject, []), {}, 'filterByKeys({}, []) === {}');
-        assert.deepEqual(filterByKeys(blunkTestObject, ["x", "y", "z"]), {}, 'несуществующие ключи в пустом объекте');
+        assert.deepEqual(filterByKeys(emptyTestObject, ["name"]), {}, 'filterByKeys({}, ["name"]) === {}');
+        assert.deepEqual(filterByKeys(emptyTestObject, []), {}, 'filterByKeys({}, []) === {}');
+        assert.deepEqual(filterByKeys(emptyTestObject, ["x", "y", "z"]), {}, 'несуществующие ключи в пустом объекте');
     });
 
     QUnit.test('Клонирует объект с примитивными полями', function (assert) {
@@ -163,6 +163,94 @@ QUnit.module('Тестируем функцию filterByKeys', function () {
             filterByKeys(simpleTestObject, ["name", "name", "name"]),
             { name: "John" },
             'дубликаты ключей не создают проблем'
+        );
+    });
+
+    QUnit.test('Выбрасывает TypeError, если obj — это null', function (assert) {
+        assert.throws(
+            () => filterByKeys(null, ["name"]),
+            TypeError,
+            'filterByKeys(null, ["name"]) выбрасывает TypeError'
+        );
+    });
+
+    QUnit.test('Выбрасывает TypeError, если obj — это undefined', function (assert) {
+        assert.throws(
+            () => filterByKeys(undefined, ["name"]),
+            TypeError,
+            'filterByKeys(undefined, ["name"]) выбрасывает TypeError'
+        );
+    });
+
+    QUnit.test('Выбрасывает TypeError, если obj — это строка', function (assert) {
+        assert.throws(
+            () => filterByKeys("string", ["name"]),
+            TypeError,
+            'filterByKeys("string", ["name"]) выбрасывает TypeError'
+        );
+    });
+
+    QUnit.test('Выбрасывает TypeError, если obj — это число', function (assert) {
+        assert.throws(
+            () => filterByKeys(42, ["name"]),
+            TypeError,
+            'filterByKeys(42, ["name"]) выбрасывает TypeError'
+        );
+    });
+
+    QUnit.test('Выбрасывает TypeError, если obj — это boolean', function (assert) {
+        assert.throws(
+            () => filterByKeys(true, ["name"]),
+            TypeError,
+            'filterByKeys(true, ["name"]) выбрасывает TypeError'
+        );
+    });
+
+    QUnit.test('Выбрасывает TypeError, если keys — это строка', function (assert) {
+        assert.throws(
+            () => filterByKeys({ name: "John" }, "name"),
+            TypeError,
+            'filterByKeys(obj, "name") выбрасывает TypeError'
+        );
+    });
+
+    QUnit.test('Выбрасывает TypeError, если keys — это число', function (assert) {
+        assert.throws(
+            () => filterByKeys({ name: "John" }, 123),
+            TypeError,
+            'filterByKeys(obj, 123) выбрасывает TypeError'
+        );
+    });
+
+    QUnit.test('Выбрасывает TypeError, если keys — это null', function (assert) {
+        assert.throws(
+            () => filterByKeys({ name: "John" }, null),
+            TypeError,
+            'filterByKeys(obj, null) выбрасывает TypeError'
+        );
+    });
+
+    QUnit.test('Выбрасывает TypeError, если keys — это undefined', function (assert) {
+        assert.throws(
+            () => filterByKeys({ name: "John" }, undefined),
+            TypeError,
+            'filterByKeys(obj, undefined) выбрасывает TypeError'
+        );
+    });
+
+    QUnit.test('Выбрасывает TypeError, если keys — это объект', function (assert) {
+        assert.throws(
+            () => filterByKeys({ name: "John" }, { name: true }),
+            TypeError,
+            'filterByKeys(obj, {name: true}) выбрасывает TypeError'
+        );
+    });
+
+    QUnit.test('Выбрасывает TypeError, если keys — это Set', function (assert) {
+        assert.throws(
+            () => filterByKeys({ name: "John" }, new Set(["name"])),
+            TypeError,
+            'filterByKeys(obj, Set) выбрасывает TypeError'
         );
     });
 });
