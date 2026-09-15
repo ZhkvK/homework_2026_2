@@ -27,7 +27,6 @@
  * filterByKeys({ a: 1, b: 2 }, ['a', 'c']);
  * // => { a: 1 }
  */
-
 const filterByKeys = (obj, keys) => {
   if (
     typeof obj !== "object" ||
