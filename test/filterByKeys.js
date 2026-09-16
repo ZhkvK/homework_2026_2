@@ -277,4 +277,12 @@ QUnit.module('Тестируем функцию filterByKeys', function () {
             'filterByKeys(obj, Set) выбрасывает TypeError'
         );
     });
+
+    QUnit.test('Выбрасывает TypeError, если хотя бы один ключ внутри keys — это объект', function (assert) {
+        assert.throws(
+            () => filterByKeys({ name: "John" }, [{name: "John"}, "name"]),
+            TypeError,
+            'filterByKeys(obj, Set) выбрасывает TypeError'
+        );
+    });
 });

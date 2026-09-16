@@ -32,9 +32,16 @@ const filterByKeys = (obj, keys) => {
     typeof obj !== "object" ||
     obj === null ||
     Object.prototype.toString.call(obj) !== "[object Object]"
-  )
-    throw new TypeError("obj must be an object");
-  if (!Array.isArray(keys)) throw new TypeError("keys must be an array");
+  ) {
+    throw new TypeError("obj must be a plain object");
+  }
+  if (!Array.isArray(keys)) {
+    throw new TypeError("keys must be an array");
+  }
+  if (!keys.every(key => typeof key !== "object")) {
+    throw new TypeError('every key in keys must not be object');
+  }
+
 
   return Object.fromEntries(
     keys
