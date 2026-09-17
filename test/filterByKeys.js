@@ -278,11 +278,68 @@ QUnit.module('Тестируем функцию filterByKeys', function () {
         );
     });
 
-    QUnit.test('Выбрасывает TypeError, если хотя бы один ключ внутри keys — это объект', function (assert) {
+    QUnit.test('Выбрасывает TypeError, если keys содержит объект', function (assert) {
         assert.throws(
-            () => filterByKeys({ name: "John" }, [{name: "John"}, "name"]),
+            () => filterByKeys({ name: "John" }, ["name", { id: 1 }]),
             TypeError,
-            'filterByKeys(obj, Set) выбрасывает TypeError'
+            'filterByKeys(obj, ["name", {id:1}]) выбрасывает TypeError'
         );
+    });
+
+    QUnit.test('Выбрасывает TypeError, если keys содержит функцию', function (assert) {
+        assert.throws(
+            () => filterByKeys({ name: "John" }, ["name", () => {}]),
+            TypeError,
+            'filterByKeys(obj, ["name", fn]) выбрасывает TypeError'
+        );
+    });
+
+    QUnit.test('Выбрасывает TypeError, если keys содержит null', function (assert) {
+        assert.throws(
+            () => filterByKeys({ name: "John" }, ["name", null]),
+            TypeError,
+            'filterByKeys(obj, ["name", null]) выбрасывает TypeError'
+        );
+    });
+
+    QUnit.test('Выбрасывает TypeError, если keys содержит undefined', function (assert) {
+        assert.throws(
+            () => filterByKeys({ name: "John" }, ["name", undefined]),
+            TypeError,
+            'filterByKeys(obj, ["name", undefined]) выбрасывает TypeError'
+        );
+    });
+
+    QUnit.test('Выбрасывает TypeError, если keys содержит boolean', function (assert) {
+        assert.throws(
+            () => filterByKeys({ name: "John" }, ["name", true]),
+            TypeError,
+            'filterByKeys(obj, ["name", true]) выбрасывает TypeError'
+        );
+    });
+
+    QUnit.test('Выбрасывает TypeError, если keys содержит вложенный массив', function (assert) {
+        assert.throws(
+            () => filterByKeys({ name: "John" }, ["name", ["age"]]),
+            TypeError,
+            'filterByKeys(obj, ["name", ["age"]]) выбрасывает TypeError'
+        );
+    });
+
+    QUnit.test('Выбрасывает TypeError, если keys содержит BigInt', function (assert) {
+        assert.throws(
+            () => filterByKeys({ name: "John" }, ["name", 1n]),
+            TypeError,
+            'filterByKeys(obj, ["name", 1n]) выбрасывает TypeError'
+        );
+    });
+
+    QUnit.test('Не выбрасывает ошибку, если keys содержит только допустимые типы', function (assert) {
+        const sym = Symbol('test');
+        const result = filterByKeys(
+            { name: "John", 0: "zero", [sym]: "symbol-value" },
+            ["name", 0, sym]
+        );
+        assert.deepEqual(result, { name: "John", 0: "zero", [sym]: "symbol-value" });
     });
 });

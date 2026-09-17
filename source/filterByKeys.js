@@ -38,8 +38,8 @@ const filterByKeys = (obj, keys) => {
   if (!Array.isArray(keys)) {
     throw new TypeError("keys must be an array");
   }
-  if (!keys.every(key => typeof key !== "object")) {
-    throw new TypeError('every key in keys must not be object');
+  if (!keys.every(key => ['string', 'number', 'symbol'].includes(typeof key))) {
+    throw new TypeError('every key in keys must be string, number or symbol');
   }
 
 
